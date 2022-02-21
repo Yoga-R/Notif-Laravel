@@ -27,3 +27,10 @@ Route::post('admin/login', 'admin\AdminLoginController@postLogin');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/dashboard',function(){
+    return view('master');
+});
+
+Route::resource('/tenagakerja', TenagaKerjaController::class);
+Route::resource('/pekerjaan', PekerjaanController::class);

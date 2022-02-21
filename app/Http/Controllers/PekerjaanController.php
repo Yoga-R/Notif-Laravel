@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\tbltenagakerja;
-use App\tblkeahlian;
-class TenagaKerjaController extends Controller
+use App\tblPekerjaan;
+class PekerjaanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +13,7 @@ class TenagaKerjaController extends Controller
      */
     public function index()
     {
-        $data = tbltenagakerja::all();
-        return view('TenagaKerja.index', compact('data'));
+        //
     }
 
     /**
@@ -25,8 +23,7 @@ class TenagaKerjaController extends Controller
      */
     public function create()
     {
-        $keahlian=tblkeahlian::all();
-        return view('TenagaKerja.create',compact('keahlian'));
+        return view('Pekerjaan.create');
     }
 
     /**
@@ -38,31 +35,27 @@ class TenagaKerjaController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'fullname'     => 'required',
-            'email'     => 'required',
-            'password'   => 'required',
-            'notelpon'   => 'required',
-            'keahlian'   => 'required'
+            'judul'     => 'required',
+            'detail'     => 'required'
          ]);
-       
-         //upload image
-
-       
-         $post = tbltenagakerja::create([
-             'name'     => $request->fullname,
-             'email'     => $request->email,
-             'password'   => bcrypt($request->password),
-             'notelpon'   => $request->notelpon,
-             'keahlian'   => $request->keahlian
+         $post = tblPekerjaan::create([
+'Judul_Pekerjaan'=>$request->judul,
+'Detail_Pekerjaan'=>$request->detail,
          ]);
-       
-         if($post){
-           //redirect dengan pesan sukses
-           return redirect()->route('tenagakerja.create')->with(['success' => 'Data Berhasil Disimpan!']);
-         }else{
-           //redirect dengan pesan error
-           return redirect()->route('tenagakerja.create')->with(['error' => 'Data Gagal Disimpan!']);
-         }
+         if($request->file('file')!=null){
+            //simpan icon storage
+            $image = $request->file('file');
+            $image->storeAs('public/file-pekerjaan/', $image->hashName());
+            //simpan icon database
+            $post->update([
+                'File'=>$image->hashName()
+            ]);
+            if($post){
+                return redirect()->route('pekerjaan.index')->with('success','Data berhasil ditambahkan');
+            }else{
+                return redirect()->route('pekerjaan.index')->with('error','Data gagal ditambahkan');
+            }
+        }
     }
 
     /**
