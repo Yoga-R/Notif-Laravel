@@ -18,6 +18,7 @@ class CreateTblPekerjaansTable extends Migration
             $table->String('Judul_Pekerjaan');
             $table->String('Detail_Pekerjaan');
             $table->String('File');
+            $table->Int('status')->default(0);
             $table->timestamps();
         });
     }

@@ -32,5 +32,14 @@ Route::get('/dashboard',function(){
     return view('master');
 });
 
+Route::get('/send-email',function(){
+    $details = [
+        'judul' => 'Mail from ItSolutionStuff.com',
+        'body' => 'kerjaan'
+    ];
+   
+    \Mail::to('yogagames27@gmail.com')->send(new \App\Mail\SendMail($details));
+});
+
 Route::resource('/tenagakerja', TenagaKerjaController::class);
 Route::resource('/pekerjaan', PekerjaanController::class);

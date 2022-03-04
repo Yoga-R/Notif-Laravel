@@ -13,7 +13,8 @@ class PekerjaanController extends Controller
      */
     public function index()
     {
-        //
+        $pekerjaan=tblPekerjaan::paginate(25);
+        return view('Pekerjaan.index',compact('pekerjaan'));
     }
 
     /**
@@ -41,6 +42,7 @@ class PekerjaanController extends Controller
          $post = tblPekerjaan::create([
 'Judul_Pekerjaan'=>$request->judul,
 'Detail_Pekerjaan'=>$request->detail,
+'File'=>'null',
          ]);
          if($request->file('file')!=null){
             //simpan icon storage
