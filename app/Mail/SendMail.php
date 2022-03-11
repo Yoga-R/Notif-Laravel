@@ -31,7 +31,8 @@ class SendMail extends Mailable
     {
         return $this->from("agoy@gmail.com")->
         subject('Mail from agoy.com')
-        ->attach('')
+        ->with(['judul', $this->details['judul'],
+                'body', $this->details['body'],])
                     ->view('notifikasi.email');
     }
 }

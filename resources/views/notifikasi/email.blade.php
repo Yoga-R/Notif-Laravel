@@ -275,7 +275,7 @@ a[x-apple-data-detectors='true'] {
         
   <div style="color: #333333; line-height: 200%; text-align: left; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 200%;"><span style="font-size: 16px; line-height: 32px;">Dear,</span></p>
-<p style="font-size: 14px; line-height: 200%;"><span style="font-size: 16px; line-height: 32px;">Sahabat bahana, Sehubungan dengan adanya pekerjaan berikut test kami menawarkan pekerjaan di&nbsp; bidang sebagai berikut ;</span></p>
+<p style="font-size: 14px; line-height: 200%;"><span style="font-size: 16px; line-height: 32px;">Sahabat bahana, Sehubungan dengan adanya pekerjaan berikut {{$judul}} kami menawarkan pekerjaan di&nbsp; bidang sebagai berikut ;</span></p>
 <p style="font-size: 14px; line-height: 200%;"><span style="font-size: 16px; line-height: 32px;">1. Plumbing and Sanitary</span></p>
 <p style="font-size: 14px; line-height: 200%;"><span style="font-size: 16px; line-height: 32px;">2. Mekanik and Elektrikal</span></p>
 <p style="font-size: 14px; line-height: 200%;"><span style="font-size: 16px; line-height: 32px;">&nbsp;Rincian pekerjaan yang dilaksanakan sebagai berikut;</span></p>
