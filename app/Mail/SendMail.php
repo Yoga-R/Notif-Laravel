@@ -16,6 +16,7 @@ class SendMail extends Mailable
      *
      * @return void
      */
+    public $details;
     public function __construct($details)
     {
         $this->details = $details;
@@ -28,7 +29,9 @@ class SendMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Mail from agoy.com')
+        return $this->from("agoy@gmail.com")->
+        subject('Mail from agoy.com')
+        ->attach('')
                     ->view('notifikasi.email');
     }
 }

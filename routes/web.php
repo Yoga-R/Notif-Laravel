@@ -39,6 +39,7 @@ Route::get('/send-email',function(){
     ];
    
     \Mail::to('yogagames27@gmail.com')->send(new \App\Mail\SendMail($details));
+    dd("Email is Sent.");
 });
 
 Route::resource('/tenagakerja', TenagaKerjaController::class);
