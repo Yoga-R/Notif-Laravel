@@ -16,10 +16,14 @@ class SendMail extends Mailable
      *
      * @return void
      */
-    public $details;
-    public function __construct($details)
+    public $judul;
+    public $kerjaan;
+    public $file;
+    public function __construct($judul,$kerjaan,$file)
     {
-        $this->details = $details;
+        $this->judul = $judul;
+        $this->kerjaan = $kerjaan;
+        $this->file = public_path() . '/' .$file;
     }
 
     /**
@@ -31,8 +35,14 @@ class SendMail extends Mailable
     {
         return $this->from("agoy@gmail.com")->
         subject('Mail from agoy.com')
-        ->with(['judul', $this->details['judul'],
-                'body', $this->details['body'],])
-                    ->view('notifikasi.email');
+        ->with([
+                'judul'=>$this->judul,
+                'body'=>$this->kerjaan
+                ])
+                ->attach($this->file, [
+                    'as' => 'sample.pdf',
+                    'mime' => 'application/pdf',
+               ])
+        ->view('notifikasi.email');
     }
 }
