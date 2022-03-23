@@ -57,7 +57,7 @@
                             <td><a href="{{ Storage::url('public/blogs/').$item->File }}" class="btn">File</a></td>
                             <td>
                                 @if($item->status==0)
-                                <button class="ds-setting">Pending</button>
+                                <a href="/send-email/{{$item->id}}" class="btn btn-danger">Pending</a>
                                 @else
                                 <button class="pd-setting">Active</button>
                                 @endif

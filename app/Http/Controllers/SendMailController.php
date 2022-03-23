@@ -33,7 +33,12 @@ class SendMailController extends Controller
             \Mail::to($u->email)->send(new SendMail($judul,$body,$path_file));
             // \Mail::to('yogagames27@gmail.com')->send(new \App\Mail\SendMail($details));
         }
+        // dd($tbl_pekerjaan);
+        $tbl_pekerjaan->update([
+            'status'=>1,
+        ]);
         // return redirect('some/url');
-    dd("Email is Sent.");
+    // dd("Email is Sent.");
+    return redirect('/pekerjaan');
     }
 }
