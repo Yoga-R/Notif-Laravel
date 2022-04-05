@@ -119,6 +119,7 @@
         </div>
     </div>
 
+    @include('tools.firebase')
     <!-- jquery
 		============================================ -->
     <script src="js/vendor/jquery-1.11.3.min.js"></script>
