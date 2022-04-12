@@ -36,3 +36,7 @@ Route::get('/send-email/{id}','SendMailController@sendMail');
 
 Route::resource('/tenagakerja', TenagaKerjaController::class);
 Route::resource('/pekerjaan', PekerjaanController::class);
+Route::get('/send-firebase/{title}/{pekerjaan}','PushNotifikasiController@sendFirebase');
+
+Route::get('/kirim-notif', 'PushNotifikasiController@create')->name('notif.index');
+Route::post('/kirim-notif', 'PushNotifikasiController@sendNotifAll')->name('notif.store');

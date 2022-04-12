@@ -26,8 +26,6 @@ class SendMailController extends Controller
 
         $path_file = Storage::url('file-pekerjaan/'.$file);
         // dd($path_file);
-        // dd('test');
-        // dd($user);
         foreach($user as $u){
             // dd($u->email);
             \Mail::to($u->email)->send(new SendMail($judul,$body,$path_file));
@@ -37,8 +35,8 @@ class SendMailController extends Controller
         $tbl_pekerjaan->update([
             'status'=>1,
         ]);
-        // return redirect('some/url');
-    // dd("Email is Sent.");
-    return redirect('/pekerjaan');
+        // return redirect()->action('PushNotifikasiController@sendFirebase');
+        // return PushNotifikasiController($judul,$body);
+    return redirect('/send-firebase/'.$judul.'/'.$body);
     }
 }

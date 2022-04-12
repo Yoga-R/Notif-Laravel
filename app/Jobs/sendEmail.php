@@ -24,7 +24,7 @@ class sendEmail implements ShouldQueue
      */
     public function __construct($id)
     {
-        $this->id=$id
+        $this->id=$id;
     }
 
     /**
