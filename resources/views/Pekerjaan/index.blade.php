@@ -67,15 +67,14 @@
                                         </td>
                                         <td>
                                             {{-- <button data-toggle="tooltip" title="Edit" class="pd-setting-ed"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> --}}
-                                            <form id="frm{{$item->id}}"
-                                                action="{{ route('pekerjaan.destroy', $item->id) }}" method="Delete">
+                                            {{-- <form action="{{ route('pekerjaan.destroy', $item->id) }}" method="POST"> --}}
+                                                <form action="{{ route('pekerjaan.destroy',$item->id) }}" method="POST">
                                                 <a href="{{ route('pekerjaan.edit', $item->id) }}"
                                                     class="btn btn-sm btn-primary"><i class="fa fa-pencil-square-o"
                                                         aria-hidden="true"></i></a>
                                                 @csrf
                                                 @method('DELETE')
-                                                <a href="javascript:$('frm{{$item->id}}').submit();" >Hapus</a>
-                                                {{-- <button type="submit">HAPUS</button> --}}
+                                                <button type="submit" class="pd-setting-ed">HAPUS</button>
                                             </form>
                                             {{-- <form onsubmit="return confirm('apakah anda yakin?????????');" action="{{route('pekerjaan.destroy',$item->id)}}" method="POST">
                                     @csrf
@@ -102,3 +101,5 @@
         </div>
     </div>
 @endsection
+
+

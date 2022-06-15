@@ -105,9 +105,9 @@ class PekerjaanController extends Controller
     $pekerjaan=tblpekerjaan::findOrFail($id);
     $pekerjaan->delete();
     if ($pekerjaan){
-        return redirect()->route('pekerjaan')->with(['Success'=> 'data berhasil dihapus']);
+        return redirect()->route('pekerjaan.index')->with(['Success'=> 'data berhasil dihapus']);
     }else{
-        return redirect()->route('pekerjaan')->with(['Error'=> 'data berhasil dihapus tapi boong']);
+        return redirect()->route('pekerjaan.index')->with(['Error'=> 'data berhasil dihapus tapi boong']);
     }
         //
     }
