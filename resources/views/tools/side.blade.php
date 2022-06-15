@@ -23,18 +23,29 @@
                     <li class="active">
                         <a class="has-arrow" href="index.html">
                             <i class="icon nalika-home icon-wrap"></i>
-                            <span class="mini-click-non">Ecommerce</span>
+                            <span class="mini-click-non">MENU</span>
                         </a>
                         <ul class="submenu-angle" aria-expanded="true">
-                            <li><a title="Dashboard v.1" href="index.html"><span class="mini-sub-pro">Dashboard
-                                        v.1</span></a></li>
-                            <li><a title="Dashboard v.2" href="index-1.html"><span class="mini-sub-pro">Dashboard
-                                        v.2</span></a></li>
-                            <li><a title="Dashboard v.3" href="index-2.html"><span class="mini-sub-pro">Dashboard
-                                        v.3</span></a></li>
+                            <li><a title="Dashboard v.1" href="index.html"><span class="mini-sub-pro">Pekerjaan</span></a></li>
+                            <li><a title="Dashboard v.2" href="index-1.html"><span class="mini-sub-pro">Keahlian</span></a></li>
+                            <li><a title="Dashboard v.3" href="index-2.html"><span class="mini-sub-pro">Tenaga Kerja</span></a></li>
                             <li><a title="Product List" href="product-list.html"><span class="mini-sub-pro">Product
                                         List</span></a></li>
-                            <li><a title="Product Edit" href="product-edit.html"><span class="mini-sub-pro">Product
+                            <li style="background-color: red">
+                                {{-- <a title="Product List" href="product-list.html"> --}}
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                                                 document.getElementById('logout-form').submit();">
+                                    <span class="mini-sub-pro">
+                                                    {{ __('Logout') }}
+                                                </span>
+                                                </a>
+                                                <form id="logout-form" action="{{ route('login') }}" method="POST" class="d-none">
+                                                    @csrf
+                                                </div>
+                                        </li>
+                            {{-- <li><button><a href="login.html">Log Out</a></button></a></li> --}}
+                            {{-- <li><a title="Product Edit" href="product-edit.html"><span class="mini-sub-pro">Product
                                         Edit</span></a></li>
                             <li><a title="Product Detail" href="product-detail.html"><span
                                         class="mini-sub-pro">Product Detail</span></a></li>
@@ -45,10 +56,10 @@
                             <li><a title="Analytics" href="analytics.html"><span
                                         class="mini-sub-pro">Analytics</span></a></li>
                             <li><a title="Widgets" href="widgets.html"><span class="mini-sub-pro">Widgets</span></a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a class="has-arrow" href="mailbox.html" aria-expanded="false"><i
                                 class="icon nalika-mail icon-wrap"></i> <span
                                 class="mini-click-non">Mailbox</span></a>
@@ -181,7 +192,7 @@
                             <li><a title="Password Recovery" href="password-recovery.html"><span
                                         class="mini-sub-pro">Password Recovery</span></a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                 </ul>
             </nav>
         </div>

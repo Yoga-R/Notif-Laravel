@@ -37,11 +37,11 @@
                                                                 aria-hidden="true"></i></span>
                                                         <textarea name="detail"class="form-control" placeholder="Detail Pekerjaan"></textarea>
                                                     </div>
-                                                    <div class="input-group mg-b-pro-edt">
+                                                    {{-- <div class="input-group mg-b-pro-edt">
                                                         <span class="input-group-addon"><i class="fa fa-usd"
                                                                 aria-hidden="true"></i></span>
                                                         <input name="file"type="file" name="inputfile" class="form-control" placeholder="Input File">
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                         </div>

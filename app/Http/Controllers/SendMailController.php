@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
 use App\tblPekerjaan;
+use App\tbltenagakerja;
 use App\User;
 use Storage;
 class SendMailController extends Controller
@@ -13,7 +14,7 @@ class SendMailController extends Controller
     public function sendMail($id)
     {
         $tbl_pekerjaan = tblPekerjaan::find($id);
-        $user = User::all();   
+        $user = tbltenagakerja::all();   
         // $details = [
         //     'judul' => $tbl_pekerjaan->judul,
         //     // 'judul'=> 'tes',

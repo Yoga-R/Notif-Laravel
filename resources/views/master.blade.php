@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="{{asset('asset/css/animate.css')}}">
     <!-- normalize CSS
 		============================================ -->
-    <link rel="stylesheet" href="{{asset('asset/css/normalize.css')}}'">
+    <link rel="stylesheet" href="{{asset('asset/css/normalize.css')}}">
     <!-- meanmenu icon CSS
 		============================================ -->
     <link rel="stylesheet" href="{{asset('asset/css/meanmenu.min.css')}}">

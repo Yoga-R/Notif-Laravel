@@ -39,4 +39,4 @@ Route::resource('/pekerjaan', PekerjaanController::class);
 Route::get('/send-firebase/{title}/{pekerjaan}','PushNotifikasiController@sendFirebase');
 
 Route::get('/kirim-notif', 'PushNotifikasiController@create')->name('notif.index');
-Route::post('/kirim-notif', 'PushNotifikasiController@sendNotifAll')->name('notif.store');
+Route::post('/kirim-notif', 'PushNotifikasiController@sendNotifFirebase')->name('notif.store');
