@@ -10,13 +10,14 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
 use App\tblPekerjaan;
+use App\tbltenagakerja;
 use App\User;
-use Storage;
+use Illuminate\Support\Facades\Storage as FacadesStorage;
 
 class sendEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    public $id;
     /**
      * Create a new job instance.
      *
@@ -24,7 +25,7 @@ class sendEmail implements ShouldQueue
      */
     public function __construct($id)
     {
-        $this->id=$id;
+        $this->id = $id;
     }
 
     /**
@@ -34,14 +35,14 @@ class sendEmail implements ShouldQueue
      */
     public function handle()
     {
-        $tbl_pekerjaan = tblPekerjaan::find($id);
-        $user = User::all();   
- 
+        $tbl_pekerjaan = tblPekerjaan::find($this->id);
+        $user = User::all();
+
         $judul = $tbl_pekerjaan->Judul_Pekerjaan;
         $body = $tbl_pekerjaan->dibutuhkan;
         $file = $tbl_pekerjaan->File;
 
-        $path_file = Storage::url('file-pekerjaan/'.$file);
+        $path_file = FacadesStorage::url('file-pekerjaan/'.$file);
 
         foreach($user as $u){
             // dd($u->email);

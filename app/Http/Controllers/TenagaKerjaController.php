@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\tbltenagakerja;
 use App\tblkeahlian;
+
 class TenagaKerjaController extends Controller
 {
     /**
@@ -25,8 +26,8 @@ class TenagaKerjaController extends Controller
      */
     public function create()
     {
-        $keahlian=tblkeahlian::all();
-        return view('TenagaKerja.create',compact('keahlian'));
+        $keahlian = tblkeahlian::all();
+        return view('TenagaKerja.create', compact('keahlian'));
     }
 
     /**
@@ -37,32 +38,31 @@ class TenagaKerjaController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'fullname'     => 'required',
-            'email'     => 'required',
-            'password'   => 'required',
-            'notelpon'   => 'required',
-            'keahlian'   => 'required'
-         ]);
-       
-         //upload image
+        // $this->validate($request, [
+        //     'name'     => 'required',
+        //     'email'     => 'required',
+        //     'no_telepon'   => 'required',
+        //     'keahlian'   => 'required'
+        // ]);
 
-       
-         $post = tbltenagakerja::create([
-             'name'     => $request->fullname,
-             'email'     => $request->email,
-             'password'   => bcrypt($request->password),
-             'notelpon'   => $request->notelpon,
-             'keahlian'   => $request->keahlian
-         ]);
-       
-         if($post){
-           //redirect dengan pesan sukses
-           return redirect()->route('tenagakerja.create')->with(['success' => 'Data Berhasil Disimpan!']);
-         }else{
-           //redirect dengan pesan error
-           return redirect()->route('tenagakerja.create')->with(['error' => 'Data Gagal Disimpan!']);
-         }
+        //upload image
+
+
+        $post = tbltenagakerja::create([
+            'name'     => $request->nama,
+            'email'     => $request->email,
+            //  'password'   => bcrypt($request->password),
+            'notelpon'   => $request->no_telepon,
+            'keahlian'   => $request->keahlian
+        ]);
+
+        if ($post) {
+            //redirect dengan pesan sukses
+            return redirect()->route('tenagakerja.create')->with(['success' => 'Data Berhasil Disimpan!']);
+        } else {
+            //redirect dengan pesan error
+            return redirect()->route('tenagakerja.create')->with(['error' => 'Data Gagal Disimpan!']);
+        }
     }
 
     /**

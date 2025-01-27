@@ -14,7 +14,7 @@ class PekerjaanController extends Controller
     public function index()
     {
         $pekerjaan=tblPekerjaan::paginate(25);
-        return view('Pekerjaan.index',compact('pekerjaan'));
+        return view('dashboard-baru',compact('pekerjaan'));
     }
 
     /**
@@ -24,7 +24,7 @@ class PekerjaanController extends Controller
      */
     public function create()
     {
-        return view('Pekerjaan.create');
+        return view('Pekerjaan.create2');
     }
 
     /**

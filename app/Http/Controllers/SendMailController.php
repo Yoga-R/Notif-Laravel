@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\sendEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
@@ -13,8 +14,12 @@ class SendMailController extends Controller
 {
     public function sendMail($id)
     {
+        // $idnama = $id;
+        dispatch(new sendEmail($id));
+        // dispatch(new sendMail($idnama));
+
         $tbl_pekerjaan = tblPekerjaan::find($id);
-        $user = tbltenagakerja::all();   
+        $user = tbltenagakerja::all();
         // $details = [
         //     'judul' => $tbl_pekerjaan->judul,
         //     // 'judul'=> 'tes',
@@ -23,19 +28,19 @@ class SendMailController extends Controller
         // ];
         $judul = $tbl_pekerjaan->Judul_Pekerjaan;
         $body = $tbl_pekerjaan->dibutuhkan;
-        $file = $tbl_pekerjaan->File;
+        // $file = $tbl_pekerjaan->File;
 
-        $path_file = Storage::url('file-pekerjaan/'.$file);
-        // dd($path_file);
-        foreach($user as $u){
-            // dd($u->email);
-            \Mail::to($u->email)->send(new SendMail($judul,$body,$path_file));
-            // \Mail::to('yogagames27@gmail.com')->send(new \App\Mail\SendMail($details));
-        }
+        // $path_file = Storage::url('file-pekerjaan/'.$file);
+        // // dd($path_file);
+        // foreach($user as $u){
+        //     // dd($u->email);
+        //     \Mail::to($u->email)->send(new SendMail($judul,$body,$path_file));
+        //     // \Mail::to('yogagames27@gmail.com')->send(new \App\Mail\SendMail($details));
+        // }
         // dd($tbl_pekerjaan);
-        $tbl_pekerjaan->update([
-            'status'=>1,
-        ]);
+        // $tbl_pekerjaan->update([
+        //     'status'=>1,
+        // ]);
         // return redirect()->action('PushNotifikasiController@sendFirebase');
         // return PushNotifikasiController($judul,$body);
     return redirect('/send-firebase/'.$judul.'/'.$body);

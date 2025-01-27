@@ -28,9 +28,9 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/dashboard',function(){
-    return view('master');
-});
+// Route::get('/dashboard',function(){
+//     return view('master');
+// });
 
 Route::get('/send-email/{id}','SendMailController@sendMail');
 
@@ -40,3 +40,9 @@ Route::get('/send-firebase/{title}/{pekerjaan}','PushNotifikasiController@sendFi
 
 Route::get('/kirim-notif', 'PushNotifikasiController@create')->name('notif.index');
 Route::post('/kirim-notif', 'PushNotifikasiController@sendNotifFirebase')->name('notif.store');
+
+
+Route::resource('/pekerjaan2', PekerjaanController::class);
+Route::resource('/dashboard', PekerjaanController::class);
+
+Route::post('/firebase/save-token', [PushNotifikasiController::class, 'saveToken'])->name('firebase.save-token');
