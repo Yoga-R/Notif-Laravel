@@ -16,7 +16,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Configure Nginx + PHP-FPM
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY .env.railway /var/www/.env
+# COPY .env.railway /var/www/.env
 
 WORKDIR /var/www
 
