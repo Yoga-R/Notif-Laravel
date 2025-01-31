@@ -135,40 +135,44 @@
 # end
 
 # Stage 1: Build PHP and install dependencies
-FROM php:7.4-fpm-alpine as build
+# Menggunakan PHP-FPM dengan Nginx
+FROM php:7.4-fpm
 
-# Install PHP extensions needed by Laravel
-RUN apk add --no-cache --virtual .build-deps gcc g++ make \
-  && apk add --no-cache libpng libpng-dev libjpeg-turbo-dev libfreetype6-dev libmcrypt-dev \
-  && docker-php-ext-configure gd --with-freetype --with-jpeg \
-  && docker-php-ext-install gd pdo pdo_mysql
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+  libpng-dev \
+  libjpeg-dev \
+  libfreetype6-dev \
+  zip \
+  git \
+  libmcrypt-dev \
+  libxml2-dev \
+  nginx
 
-# Set working directory
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install gd pdo pdo_mysql
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Menyiapkan direktori kerja
 WORKDIR /var/www/html
 
-# Copy application code into the container
+# Menyalin file aplikasi Laravel
 COPY . .
 
-# Install Composer and Laravel dependencies
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-  && composer install --no-dev --optimize-autoloader
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-# Stage 2: Nginx configuration
-FROM nginx:alpine
-
-# Copy Nginx config
-COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# Copy application code from the build stage
-COPY --from=build /var/www/html /var/www/html
-
-# Set the working directory
-WORKDIR /var/www/html
+# Salin konfigurasi Nginx
+COPY ./nginx/default.conf /etc/nginx/sites-available/default
 
 # Expose port
 EXPOSE 80
 
-# Start PHP-FPM and Nginx
-CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+# Menjalankan PHP-FPM dan Nginx
+CMD service nginx start && php-fpm
+
 
 
