@@ -1,7 +1,5 @@
-# Gunakan image PHP 7.4 FPM
 FROM php:7.4-fpm
 
-# Install dependensi sistem
 RUN apt-get update && apt-get install -y \
     curl \
     git \
@@ -15,25 +13,16 @@ RUN apt-get update && apt-get install -y \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean
 
-# Konfigurasi Nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 
-# Set direktori kerja
 WORKDIR /var/www
-
-# Salin aplikasi
 COPY . .
 
-# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
-
-# Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Expose port 80 untuk Nginx
 EXPOSE 80
 
-# Entrypoint untuk migrasi dan start server
 COPY docker/entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
