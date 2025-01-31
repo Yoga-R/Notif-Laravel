@@ -20,12 +20,12 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd soap zip intl
 
-FROM base as config
+# Buat direktori soket PHP-FPM
+RUN mkdir -p /var/run/php && chown www-data:www-data /var/run/php
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/supervisor/supervisord.conf
-
-FROM config as app
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
 WORKDIR /var/www/html
 COPY . .
@@ -33,4 +33,4 @@ RUN composer install --ignore-platform-req=ext-bcmath --no-dev
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf && tail -f /dev/null"]
+CMD ["sh", "-c", "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"]
