@@ -1,36 +1,36 @@
-FROM composer:2.4.4 AS composer
-FROM php:7.4-fpm as base
+# Gunakan image PHP dengan FPM
+FROM php:7.4-fpm
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-
+# Install dependencies
 RUN apt-get update && apt-get install -y \
-    nginx \
-    supervisor \
-    zlib1g-dev \
-    libzip-dev \
-    libjpeg-dev \
-    libxml2-dev \
-    libonig-dev \
-    libicu-dev \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev
+  unzip \
+  git \
+  curl \
+  libpng-dev \
+  libjpeg-dev \
+  libfreetype6-dev \
+  libonig-dev \
+  libxml2-dev \
+  zip \
+  && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd soap zip intl
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Buat direktori soket PHP-FPM
-RUN mkdir -p /var/run/php && chown www-data:www-data /var/run/php
-
-COPY default.conf /etc/nginx/conf.d/default.conf
-COPY supervisord.conf /etc/supervisor/supervisord.conf
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-
+# Set working directory
 WORKDIR /var/www/html
+
+# Copy project files
 COPY . .
-RUN composer install --ignore-platform-req=ext-bcmath --no-dev
 
-EXPOSE 8080
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-CMD ["sh", "-c", "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"]
+# Beri permission untuk storage dan bootstrap cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Expose port 9000 untuk PHP-FPM
+EXPOSE 9000
+
+# Jalankan Laravel menggunakan PHP-FPM
+CMD ["php-fpm"]
