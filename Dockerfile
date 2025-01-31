@@ -135,44 +135,76 @@
 # end
 
 # Stage 1: Build PHP and install dependencies
-# Menggunakan PHP-FPM dengan Nginx
+# # Menggunakan PHP-FPM dengan Nginx
+# FROM php:7.4-fpm
+
+# # Install dependencies
+# RUN apt-get update && apt-get install -y \
+#   libpng-dev \
+#   libjpeg-dev \
+#   libfreetype6-dev \
+#   zip \
+#   git \
+#   libmcrypt-dev \
+#   libxml2-dev \
+#   nginx
+
+# # Install PHP extensions
+# RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+# RUN docker-php-ext-install gd pdo pdo_mysql
+
+# # Install Composer
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# # Menyiapkan direktori kerja
+# WORKDIR /var/www/html
+
+# # Menyalin file aplikasi Laravel
+# COPY . .
+
+# # Install Laravel dependencies
+# RUN composer install --no-dev --optimize-autoloader
+
+# # Salin konfigurasi Nginx
+# COPY ./nginx/default.conf /etc/nginx/sites-available/default
+
+# # Expose port
+# EXPOSE 80
+
+# # Menjalankan PHP-FPM dan Nginx
+# CMD service nginx start && php-fpm
+
+
+
+# Gunakan image PHP 7.4 FPM
 FROM php:7.4-fpm
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-  libpng-dev \
-  libjpeg-dev \
-  libfreetype6-dev \
-  zip \
-  git \
-  libmcrypt-dev \
-  libxml2-dev \
-  nginx
-
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd pdo pdo_mysql
+# Install dependencies untuk PHP
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git libmcrypt-dev libxml2-dev && \
+  docker-php-ext-configure gd --with-freetype --with-jpeg && \
+  docker-php-ext-install gd pdo pdo_mysql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Menyiapkan direktori kerja
+# Set working directory
 WORKDIR /var/www/html
 
-# Menyalin file aplikasi Laravel
+# Copy file aplikasi Laravel ke container
 COPY . .
 
-# Install Laravel dependencies
+# Install dependencies Laravel menggunakan Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Salin konfigurasi Nginx
-COPY ./nginx/default.conf /etc/nginx/sites-available/default
+# Berikan izin yang sesuai pada direktori storage dan bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
-EXPOSE 80
+# Set environment Laravel (opsional, jika belum ada file .env di dalam container)
+# COPY .env .env
 
-# Menjalankan PHP-FPM dan Nginx
-CMD service nginx start && php-fpm
+# Expose port untuk PHP-FPM
+EXPOSE 9000
 
-
-
+# Set command untuk menjalankan PHP-FPM
+CMD ["php-fpm"]
