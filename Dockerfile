@@ -1,210 +1,70 @@
-# # Stage 1: Build Laravel dengan PHP 7.4 dan Composer
-# FROM php:7.4-fpm AS app
+FROM ubuntu:24.04
 
-# # Install dependencies
-# RUN apt-get update && apt-get install -y \
-#   unzip \
-#   git \
-#   curl \
-#   libpng-dev \
-#   libjpeg-dev \
-#   libfreetype6-dev \
-#   libonig-dev \
-#   libxml2-dev \
-#   zip \
-#   && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+LABEL maintainer="Taylor Otwell"
 
-# # Install Composer
-# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+ARG WWWGROUP
+ARG NODE_VERSION=22
+ARG POSTGRES_VERSION=17
 
-# # Set working directory
-# WORKDIR /var/www/html
-
-# # Copy Laravel project files
-# COPY . .
-
-# # Install Laravel dependencies
-# RUN composer install --no-dev --optimize-autoloader
-
-# # Set permissions for storage and bootstrap cache
-# RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# # Stage 2: Setup Nginx dengan Laravel
-# FROM nginx:latest AS webserver
-
-# # Set working directory
-# WORKDIR /var/www/html
-
-# # Copy Laravel app dari stage pertama
-# COPY --from=app /var/www/html /var/www/html
-
-# # Copy konfigurasi Nginx
-# COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# # Expose port 80 untuk Nginx
-# EXPOSE 80
-
-# # Jalankan Nginx
-# CMD ["nginx", "-g", "daemon off;"]
-
-# FROM php:7.4-fpm
-
-# # Install dependencies
-# RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git libmcrypt-dev libpng-dev libxml2-dev
-
-# # Install PHP extensions
-# RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-# RUN docker-php-ext-install gd pdo pdo_mysql
-
-# # Install Composer
-# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# WORKDIR /var/www/html
-
-# # Copy existing application directory contents
-# COPY . .
-
-# # Install Laravel dependencies
-# RUN composer install --no-dev --optimize-autoloader
-
-# CMD ["php-fpm"]
-# work
-# FROM php:7.4-fpm
-
-# # Install dependencies
-# RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git libmcrypt-dev libpng-dev libxml2-dev
-
-# # Install PHP extensions
-# RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-# RUN docker-php-ext-install gd pdo pdo_mysql
-
-# # Install Composer
-# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# WORKDIR /var/www/html
-
-# # Copy application files
-# COPY . .
-
-# # Install Laravel dependencies
-# RUN composer install --no-dev --optimize-autoloader
-
-# CMD ["php-fpm"]
-#emd
-
-# Gunakan image PHP resmi dengan nginx
-# Gunakan image PHP resmi dengan nginx
-# FROM php:7.4-fpm
-
-# # Install dependensi untuk Laravel
-# RUN apt-get update && apt-get install -y \
-#   libpng-dev \
-#   libjpeg-dev \
-#   libfreetype6-dev \
-#   zip \
-#   git \
-#   curl \
-#   gnupg2 \
-#   ca-certificates
-
-# # Install Node.js (untuk npm)
-# RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-#   apt-get install -y nodejs
-
-# # Install Composer
-# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# # Set working directory
-# WORKDIR /var/www/html
-
-# # Salin file aplikasi Laravel
-# COPY . .
-
-# # Install dependencies Laravel
-# RUN composer install --no-dev --optimize-autoloader
-
-# # Install npm dependencies
-# RUN npm install && npm run prod
-
-# # Ekspos port
-# EXPOSE 80
-
-# # Tentukan perintah untuk menjalankan Laravel dengan nginx
-# CMD ["php-fpm"]
-
-# end
-
-# Stage 1: Build PHP and install dependencies
-# # Menggunakan PHP-FPM dengan Nginx
-# FROM php:7.4-fpm
-
-# # Install dependencies
-# RUN apt-get update && apt-get install -y \
-#   libpng-dev \
-#   libjpeg-dev \
-#   libfreetype6-dev \
-#   zip \
-#   git \
-#   libmcrypt-dev \
-#   libxml2-dev \
-#   nginx
-
-# # Install PHP extensions
-# RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-# RUN docker-php-ext-install gd pdo pdo_mysql
-
-# # Install Composer
-# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# # Menyiapkan direktori kerja
-# WORKDIR /var/www/html
-
-# # Menyalin file aplikasi Laravel
-# COPY . .
-
-# # Install Laravel dependencies
-# RUN composer install --no-dev --optimize-autoloader
-
-# # Salin konfigurasi Nginx
-# COPY ./nginx/default.conf /etc/nginx/sites-available/default
-
-# # Expose port
-# EXPOSE 80
-
-# # Menjalankan PHP-FPM dan Nginx
-# CMD service nginx start && php-fpm
-
-
-
-# Gunakan image PHP 7.4 FPM
-FROM php:7.4-fpm
-
-# Install dependencies untuk PHP
-RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git libmcrypt-dev libxml2-dev && \
-  docker-php-ext-configure gd --with-freetype --with-jpeg && \
-  docker-php-ext-install gd pdo pdo_mysql
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy file aplikasi Laravel ke container
-COPY . .
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+ENV SUPERVISOR_PHP_COMMAND="/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan serve --host=0.0.0.0 --port=80"
+ENV SUPERVISOR_PHP_USER="sail"
 
-# Install dependencies Laravel menggunakan Composer
-RUN composer install --no-dev --optimize-autoloader
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Berikan izin yang sesuai pada direktori storage dan bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
+  echo "Acquire::http::No-Cache true;" >> /etc/apt/apt.conf.d/99custom && \
+  echo "Acquire::BrokenProxy    true;" >> /etc/apt/apt.conf.d/99custom
 
-# Set environment Laravel (opsional, jika belum ada file .env di dalam container)
-# COPY .env .env
+RUN apt-get update && apt-get upgrade -y \
+  && mkdir -p /etc/apt/keyrings \
+  && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python3 dnsutils librsvg2-bin fswatch ffmpeg nano \
+  && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xb8dc7e53946656efbce4c1dd71daeaab4ad4cab6' | gpg --dearmor | tee /usr/share/keyrings/ppa_ondrej_php.gpg > /dev/null \
+  && echo "deb [signed-by=/usr/share/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
+  && apt-get update \
+  && apt-get install -y php8.0-cli php8.0-dev \
+  php8.0-pgsql php8.0-sqlite3 php8.0-gd php8.0-imagick \
+  php8.0-curl php8.0-memcached php8.0-mongodb \
+  php8.0-imap php8.0-mysql php8.0-mbstring \
+  php8.0-xml php8.0-zip php8.0-bcmath php8.0-soap \
+  php8.0-intl php8.0-readline php8.0-pcov \
+  php8.0-msgpack php8.0-igbinary php8.0-ldap \
+  php8.0-redis php8.0-swoole php8.0-xdebug \
+  && curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+  && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \
+  && apt-get update \
+  && apt-get install -y nodejs \
+  && npm install -g npm \
+  && npm install -g bun \
+  && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarnkey.gpg >/dev/null \
+  && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+  && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /usr/share/keyrings/pgdg.gpg >/dev/null \
+  && echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt noble-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+  && apt-get update \
+  && apt-get install -y yarn \
+  && apt-get install -y mysql-client \
+  && apt-get install -y postgresql-client-$POSTGRES_VERSION \
+  && apt-get -y autoremove \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Expose port untuk PHP-FPM
-EXPOSE 9000
+RUN update-alternatives --set php /usr/bin/php8.0
 
-# Set command untuk menjalankan PHP-FPM
-CMD ["php-fpm"]
+RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.0
+
+RUN userdel -r ubuntu
+RUN groupadd --force -g $WWWGROUP sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+
+COPY start-container /usr/local/bin/start-container
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
+RUN chmod +x /usr/local/bin/start-container
+
+EXPOSE 80/tcp
+
+ENTRYPOINT ["start-container"]
