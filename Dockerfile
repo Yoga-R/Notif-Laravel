@@ -34,4 +34,6 @@ RUN composer install --ignore-platform-req=ext-bcmath --no-dev
 
 EXPOSE 8080
 # Tambahkan argumen "-c" untuk menentukan path konfigurasi
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
+CMD ["sh", "-c", "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf && tail -f /dev/null"]
