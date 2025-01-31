@@ -33,7 +33,7 @@ RUN chown -R www-data:www-data /var/www/storage
 # RUN npm install && npm run production
 
 # Generate key
-RUN php artisan key:generate
+# RUN php artisan key:generate
 
 # Expose port dari environment Railway
 EXPOSE $PORT
