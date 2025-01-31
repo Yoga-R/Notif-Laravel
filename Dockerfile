@@ -23,7 +23,6 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 FROM base as config
 
 COPY default.conf /etc/nginx/conf.d/default.conf
-# Salin ke path utama Supervisor
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 FROM config as app
@@ -33,7 +32,5 @@ COPY . .
 RUN composer install --ignore-platform-req=ext-bcmath --no-dev
 
 EXPOSE 8080
-# Tambahkan argumen "-c" untuk menentukan path konfigurasi
-# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 CMD ["sh", "-c", "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf && tail -f /dev/null"]
