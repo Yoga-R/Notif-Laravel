@@ -94,41 +94,81 @@
 
 # Gunakan image PHP resmi dengan nginx
 # Gunakan image PHP resmi dengan nginx
-FROM php:7.4-fpm
+# FROM php:7.4-fpm
 
-# Install dependensi untuk Laravel
-RUN apt-get update && apt-get install -y \
-  libpng-dev \
-  libjpeg-dev \
-  libfreetype6-dev \
-  zip \
-  git \
-  curl \
-  gnupg2 \
-  ca-certificates
+# # Install dependensi untuk Laravel
+# RUN apt-get update && apt-get install -y \
+#   libpng-dev \
+#   libjpeg-dev \
+#   libfreetype6-dev \
+#   zip \
+#   git \
+#   curl \
+#   gnupg2 \
+#   ca-certificates
 
-# Install Node.js (untuk npm)
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-  apt-get install -y nodejs
+# # Install Node.js (untuk npm)
+# RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+#   apt-get install -y nodejs
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# # Install Composer
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# # Set working directory
+# WORKDIR /var/www/html
+
+# # Salin file aplikasi Laravel
+# COPY . .
+
+# # Install dependencies Laravel
+# RUN composer install --no-dev --optimize-autoloader
+
+# # Install npm dependencies
+# RUN npm install && npm run prod
+
+# # Ekspos port
+# EXPOSE 80
+
+# # Tentukan perintah untuk menjalankan Laravel dengan nginx
+# CMD ["php-fpm"]
+
+# end
+
+# Stage 1: Build PHP and install dependencies
+FROM php:7.4-fpm-alpine as build
+
+# Install PHP extensions needed by Laravel
+RUN apk add --no-cache --virtual .build-deps gcc g++ make \
+  && apk add --no-cache libpng libpng-dev libjpeg-turbo-dev libfreetype6-dev libmcrypt-dev \
+  && docker-php-ext-configure gd --with-freetype --with-jpeg \
+  && docker-php-ext-install gd pdo pdo_mysql
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Salin file aplikasi Laravel
+# Copy application code into the container
 COPY . .
 
-# Install dependencies Laravel
-RUN composer install --no-dev --optimize-autoloader
+# Install Composer and Laravel dependencies
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+  && composer install --no-dev --optimize-autoloader
 
-# Install npm dependencies
-RUN npm install && npm run prod
+# Stage 2: Nginx configuration
+FROM nginx:alpine
 
-# Ekspos port
+# Copy Nginx config
+COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Copy application code from the build stage
+COPY --from=build /var/www/html /var/www/html
+
+# Set the working directory
+WORKDIR /var/www/html
+
+# Expose port
 EXPOSE 80
 
-# Tentukan perintah untuk menjalankan Laravel dengan nginx
-CMD ["php-fpm"]
+# Start PHP-FPM and Nginx
+CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+
 
