@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Generate APP_KEY jika belum ada
+if [ -z "$(grep APP_KEY=base64:.b3 .env)" ]; then
+    php artisan key:generate
+fi
+
 # Jalankan migrasi database (opsional)
 # php artisan migrate --force
 
