@@ -108,7 +108,7 @@ RUN apt-get update && apt-get install -y \
   ca-certificates
 
 # Install Node.js (untuk npm)
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
   apt-get install -y nodejs
 
 # Install Composer
