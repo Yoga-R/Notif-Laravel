@@ -14,8 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-Route::post('/firebase', FirebaseApiController::class);
+Route::middleware('auth:api')->get('/user', [UserController::class, 'getUser']);
+
+Route::post('/firebase', [PushNotifikasiController::class, 'saveToken']);

@@ -13,14 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'show']);
 
 
-route::get('/loginadmin',function(){
-    return view('Index');
-});
+Route::get('/loginadmin', [AdminController::class, 'loginAdmin']);
 
 Route::get('admin/login', 'admin\AdminLoginController@getLogin')->name('admin.login');
 Route::post('admin/login', 'admin\AdminLoginController@postLogin');
