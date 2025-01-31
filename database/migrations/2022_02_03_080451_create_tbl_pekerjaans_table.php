@@ -19,7 +19,7 @@ class CreateTblPekerjaansTable extends Migration
             $table->String('Detail_Pekerjaan');
             $table->String('dibutuhkan');
             $table->String('File');
-            $table->Int('status')->default(0);
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }
