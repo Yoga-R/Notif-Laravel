@@ -1,42 +1,42 @@
-FROM php:7.4-fpm
+FROM composer:2.4.4 AS composer
+FROM php:7.4-fpm as base
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-# Install Nginx
-# Install dependensi
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    unzip \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
+#UPDATE
+RUN apt-get update
+
+#INSTALL DEPS
+RUN apt-get install -y \
     nginx \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && apt-get clean
+    supervisor \
+    zlib1g-dev \
+    libzip-dev \
+    libjpeg-dev \
+    libxml2-dev \
+    libonig-dev \
+    libicu-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev
 
-# Copy Nginx configuration
-COPY default.conf /etc/nginx/sites-available/default
+#SETUP PHP EXTENSIONS
+RUN docker-php-ext-install gd soap zip intl
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
-# Copy Supervisor configuration
+FROM base as config
+
+#COPY NGINX AND SUPERVISOR CONF
+COPY default.conf /etc/nginx/conf.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+FROM config as app
 
-# Copy Laravel application
-COPY . /var/www/html
-
-# Set working directory
 WORKDIR /var/www/html
 
-# Install Composer dependencies
-# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-dev --optimize-autoloader
+COPY . .
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN composer install --ignore-platform-req=ext-bcmath --no-dev
 
-# Expose port 80
-EXPOSE 80
-
-# Start Supervisor
+EXPOSE 8080
 CMD ["/usr/bin/supervisord"]
