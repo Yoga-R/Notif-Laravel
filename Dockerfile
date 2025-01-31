@@ -68,26 +68,67 @@
 # RUN composer install --no-dev --optimize-autoloader
 
 # CMD ["php-fpm"]
+# work
+# FROM php:7.4-fpm
 
+# # Install dependencies
+# RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git libmcrypt-dev libpng-dev libxml2-dev
+
+# # Install PHP extensions
+# RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+# RUN docker-php-ext-install gd pdo pdo_mysql
+
+# # Install Composer
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# WORKDIR /var/www/html
+
+# # Copy application files
+# COPY . .
+
+# # Install Laravel dependencies
+# RUN composer install --no-dev --optimize-autoloader
+
+# CMD ["php-fpm"]
+#emd
+
+# Gunakan image PHP resmi dengan nginx
+# Gunakan image PHP resmi dengan nginx
 FROM php:7.4-fpm
 
-# Install dependencies
-RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip git libmcrypt-dev libpng-dev libxml2-dev
+# Install dependensi untuk Laravel
+RUN apt-get update && apt-get install -y \
+  libpng-dev \
+  libjpeg-dev \
+  libfreetype6-dev \
+  zip \
+  git \
+  curl \
+  gnupg2 \
+  ca-certificates
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd pdo pdo_mysql
+# Install Node.js (untuk npm)
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+  apt-get install -y nodejs
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Salin file aplikasi Laravel
 COPY . .
 
-# Install Laravel dependencies
+# Install dependencies Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+# Install npm dependencies
+RUN npm install && npm run prod
+
+# Ekspos port
+EXPOSE 80
+
+# Tentukan perintah untuk menjalankan Laravel dengan nginx
 CMD ["php-fpm"]
 
