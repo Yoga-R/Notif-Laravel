@@ -21,6 +21,7 @@ COPY default.conf /etc/nginx/sites-available/default
 # Copy Supervisor configuration
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+
 # Copy Laravel application
 COPY . /var/www/html
 
