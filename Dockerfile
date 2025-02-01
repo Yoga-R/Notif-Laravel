@@ -93,17 +93,11 @@
 # CMD service nginx start && php-fpm -F
 
 
-# Gunakan PHP 7.4 dengan CLI
+# Gunakan PHP 7.4 dengan CLI# Gunakan PHP 7.4
 FROM php:7.4-cli
 
-# Install dependensi yang dibutuhkan
-RUN apt-get update && apt-get install -y \
-  unzip \
-  curl \
-  git \
-  libpng-dev \
-  libjpeg-dev \
-  libfreetype6-dev \
+# Install Supervisor
+RUN apt-get update && apt-get install -y supervisor unzip curl git libpng-dev libjpeg-dev libfreetype6-dev \
   && docker-php-ext-configure gd \
   && docker-php-ext-install gd pdo pdo_mysql
 
@@ -120,8 +114,12 @@ RUN composer install --no-dev --optimize-autoloader
 # Set permission storage dan cache
 RUN chmod -R 777 storage bootstrap/cache
 
-# Expose port yang akan digunakan Laravel
+# Install Supervisor config
+COPY supervisord.conf /etc/supervisord.conf
+
+# Expose port 8080
 EXPOSE 8080
 
-# Jalankan Laravel dengan port dari Railway
-CMD php artisan serve --host=0.0.0.0 --port=${PORT}
+# Jalankan Supervisor
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+
