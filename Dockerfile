@@ -55,13 +55,52 @@
 # CMD bash -c "php-fpm -D && nginx -g 'daemon off;'"
 # docker build -t laravel_app . && docker run -p 80:80 laravel_app
 # Gunakan image PHP-FPM dengan Nginx
-FROM php:7.4-fpm
+# Gunakan image resmi PHP-FPM
+# FROM php:7.4-fpm
 
-# Install dependencies
+# # Install dependencies
+# RUN apt-get update && apt-get install -y \
+#   nginx \
+#   git \
+#   unzip \
+#   libpng-dev \
+#   libjpeg-dev \
+#   libfreetype6-dev \
+#   && docker-php-ext-configure gd \
+#   && docker-php-ext-install gd pdo pdo_mysql
+
+# # Set working directory
+# WORKDIR /var/www/html
+
+# # Copy semua file Laravel ke dalam container
+# COPY . .
+
+# # Install Composer dan dependensi Laravel
+# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# RUN composer install --no-dev --optimize-autoloader
+
+# # Set permission untuk Laravel storage & cache
+# RUN chown -R www-data:www-data storage bootstrap/cache
+# RUN chmod -R 777 storage bootstrap/cache
+
+# # Copy konfigurasi Nginx
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+# # Expose port 80 untuk Nginx
+# EXPOSE 80
+
+# # Jalankan Nginx dan PHP-FPM secara bersamaan
+# CMD service nginx start && php-fpm -F
+
+
+# Gunakan PHP 7.4 dengan CLI
+FROM php:7.4-cli
+
+# Install dependensi yang dibutuhkan
 RUN apt-get update && apt-get install -y \
-  nginx \
-  git \
   unzip \
+  curl \
+  git \
   libpng-dev \
   libjpeg-dev \
   libfreetype6-dev \
@@ -71,22 +110,18 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy semua file proyek ke dalam container
+# Copy semua file Laravel ke dalam container
 COPY . .
 
-# Install Composer dependencies
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Konfigurasi permission storage dan bootstrap
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Set permission storage dan cache
+RUN chmod -R 777 storage bootstrap/cache
 
-# Setup Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+# Expose port yang akan digunakan Laravel
+EXPOSE 8080
 
-# Expose port 80 untuk Nginx
-EXPOSE 80
-
-# Start Nginx dan PHP-FPM
-CMD service nginx start && php-fpm -F
-
+# Jalankan Laravel dengan port dari Railway
+CMD php artisan serve --host=0.0.0.0 --port=${PORT}
