@@ -88,4 +88,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 
 # Start Nginx dan PHP-FPM
-CMD service nginx start && php-fpm
+CMD service nginx start && php-fpm -F
+
