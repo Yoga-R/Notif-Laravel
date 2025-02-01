@@ -1,3 +1,1 @@
-
-web: docker build -t laravel_app . && docker run -p 80:80 laravel_app
-
+web: vendor/bin/heroku-php-apache2 public/
