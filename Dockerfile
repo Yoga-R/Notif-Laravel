@@ -49,6 +49,9 @@ RUN if [ -z "$APP_KEY" ]; then php artisan key:generate; fi
 # Cache configuration
 RUN php artisan config:cache && \
   php artisan route:cache && \
-  php artisan view:cache
+  php artisan view:cache && \
+  php artisan migrate --force
+  
 
 CMD bash -c "php-fpm -D && nginx -g 'daemon off;'"
+# docker build -t laravel_app . && docker run -p 80:80 laravel_app
